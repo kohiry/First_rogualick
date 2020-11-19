@@ -20,7 +20,7 @@ class Back(Sprite):
         self.rect.y = y
 
 class Enemy(Sprite):
-    def __init__(self, x, y, width=108, height=110):
+    def __init__(self, x, y, width=40, height=80):
         Sprite.__init__(self)
         #self.image = load('data/паук/стоит/паук_стоит_направо_1.png')
         self.image = Surface((width, height))
@@ -127,11 +127,11 @@ class Ball(Sprite):
         Sprite.__init__(self)
         #self.damage_audio = Sound().DAMAGE_AUDIO
         #set_mode((0, 0), HWSURFACE| DOUBLEBUF| FULLSCREEN)
-        if side == 1:
-            self.image = load('data\\штуки\\выстрел_паутины_R.png').convert_alpha()
-        else:
-            self.image = load('data\\штуки\\выстрел_паутины_L.png').convert_alpha()
-        #self.image = Surface((10, 10))
+        #if side == 1:
+            #self.image = load('data\\штуки\\выстрел_паутины_R.png').convert_alpha()
+        #else:
+            #self.image = load('data\\штуки\\выстрел_паутины_L.png').convert_alpha()
+        self.image = Surface((10, 10))
         self.rect = self.image.get_rect()
         self.side = side
         self.rect.x = x
