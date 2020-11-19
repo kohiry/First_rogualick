@@ -1,5 +1,5 @@
 import pygame
-from pygame.sprite import Sprite
+from pygame.sprite import Sprite, collide_rect
 from pygame import Surface
 
 class Platform(Sprite):
@@ -39,29 +39,31 @@ class Enemy(Sprite):
 
     def AI(self, hero, platforms):
         way = 1100
-        if not hero.chat:
-            if hero.rect.x >= self.rect.x and hero.rect.x > self.rect.x + self.rect.width-1:
-                self.update(False, True, platforms)
-            elif hero.rect.x <= self.rect.x and hero.rect.x < self.rect.x:
-                self.update(True, False, platforms)
+        if hero.rect.x >= self.rect.x and hero.rect.x > self.rect.x + self.rect.width-50:
+            if hero.rect.y + 20 >= self.rect.y and hero.rect.y + 20 > self.rect.y + self.rect.height:
+                self.update(False, True, False, True, platforms)
+            elif hero.rect.y + 20 <= self.rect.y and hero.rect.y + 20 < self.rect.y:
+                self.update(False, True, True, False, platforms)
             else:
-                self.update(False, False, platforms)
+                self.update(False, True, False, False, platforms)
+        elif hero.rect.x <= self.rect.x and hero.rect.x < self.rect.x:
+            if hero.rect.y + 20 >= self.rect.y and hero.rect.y + 20 > self.rect.y + self.rect.height:
+                self.update(True, False, False, True, platforms)
+            elif hero.rect.y + 20 <= self.rect.y and hero.rect.y + 20 < self.rect.y:
+                self.update(True, False, True, False, platforms)
+            else:
+                self.update(True, False, False, False, platforms)
         else:
-            self.update(False, False, platforms)
-        """elif self.damage:
-            if hero.rect.x >= self.rect.x and hero.rect.x > self.rect.x + self.rect.width-1:
-                self.update(False, True, platforms)
-            elif hero.rect.x <= self.rect.x and hero.rect.x < self.rect.x:
-                self.update(True, False, platforms)
+            if hero.rect.y + 20 >= self.rect.y and hero.rect.y + 20 > self.rect.y + self.rect.height:
+                self.update(False, False, False, True, platforms)
+            elif hero.rect.y + 20 <= self.rect.y and hero.rect.y + 20 < self.rect.y:
+                self.update(False, False, True, False, platforms)
             else:
-                self.update(False, False, platforms)"""
+                self.update(False, False, False, False, platforms)
 
-
-    def update(self, left, right, platforms):
+    def update(self, left, right, up, down, platforms):
         # лево право
         SPEED = 5
-        self.image.set_colorkey((0, 255, 0))
-        self.image.fill((0, 255, 0))
         if not self.isdie:
             if left:
                 self.xvel = -SPEED  * 0.5
@@ -73,6 +75,14 @@ class Enemy(Sprite):
                 #self.AnimeEnemyGoRight.blit(self.image, (0, 0))
             if not (left or right):
                 self.xvel = 0
+            if up:
+                self.yvel = -SPEED  * 0.5
+                #self.AnimeEnemyGoLeft.blit(self.image, (0, 0))
+            if down:
+                self.yvel = SPEED * 0.5
+                #self.AnimeEnemyGoRight.blit(self.image, (0, 0))
+            if not (up or down):
+                self.yvel = 0
                 #if self.side == 1:
                     #self.AnimeEnemyStayRight.blit(self.image, (0, 0))
                 #elif self.side == -1:
@@ -82,12 +92,6 @@ class Enemy(Sprite):
                 #self.AnimeEnemyDieRight.blit(self.image, (0, 0))
             #elif self.side == -1:
                 #self.AnimeEnemyDieLeft.blit(self.image, (0, 0))
-
-        # прыжок
-        if not self.onGround:
-            self.yvel += GRAVITY
-
-        self.onGround = False
         self.rect.x += self.xvel
         self.collide(self.xvel, 0, platforms)
         self.rect.y += self.yvel

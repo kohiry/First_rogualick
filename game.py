@@ -16,8 +16,8 @@ class Game:
         self.HERO = Hero()
         self.group_platform = pygame.sprite.Group()
         self.group_draw = pygame.sprite.Group()
+        self.Enemys = pygame.sprite.Group()
         self.Bullet = []
-        self.Enemys = []
         back = Back(0, 0)
         self.group_draw.add(back)
         self.group_draw.add(self.HERO)
@@ -40,6 +40,9 @@ class Game:
         self.screen.fill(white)
         self.window.fill((0, 0, 0))
         self.group_draw.draw(self.screen)
+        for i in self.Enemys:
+            i.AI(self.HERO, self.group_platform)
+        self.Enemys.draw(self.screen)
         if not self.click:
             font = pygame.font.Font(r'other\pixle_font.ttf', 22)
             txt = font.render('очень по быстрому запилил), ЛКМ чтобы убрать меня', 1, white)
@@ -54,17 +57,12 @@ class Game:
         self.Bullet.update(self.HERO, self.enemy)
         for i in keys_bullet:
             for j in info[i]:
-                self.sound.DAMAGE_AUDIO.play()
+                #self.sound.DAMAGE_AUDIO.play()
                 j.helth -= 1
                 j.damage = True
                 j.hit()
                 if j.helth < 0:
                     j.die()
-                    self.HERO.chat = True
-                    text = choice(['text_2_end', 'text_6_end', 'text_8_end', 'text_13_end', 'text_24_end'])
-
-                    self.dialog_tab.dialog_with(('spider', text))
-                    
                 break
 
     def game_cycle(self):
@@ -115,7 +113,7 @@ class Game:
                 if col == '@':
                     self.HERO.change_coord((x, y))
                 if col == '#':
-                    self.Enemys.append(Enemy(x, y))
+                    self.Enemys.add(Enemy(x, y))
 
                 x += self.lens
             y += self.lens
